@@ -1,0 +1,92 @@
+<div class="speed-test-container">
+  <div class="intro-section card fade-in">
+    <h2>Internet Performance Analyzer</h2>
+    <p>Test your internet speed and get AI-powered performance analysis for games and applications.</p>
+    
+    <button 
+      class="btn btn-primary" 
+      (click)="runSpeedTest()" 
+      [disabled]="isTestRunning">
+      {{ isTestRunning ? 'Running Test...' : (testResults ? 'Run New Test' : 'Start Speed Test') }}
+    </button>
+    
+    <div *ngIf="isTestRunning" class="progress-container">
+      <div class="progress-bar pulse">
+        <span>Testing your connection...</span>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="testResults" class="results-section slide-up">
+    <!-- Live Performance Meter Component -->
+    <app-live-performance-meter 
+      [testResults]="testResults" 
+      [isTestRunning]="isTestRunning">
+    </app-live-performance-meter>
+    
+    <div class="card speed-results">
+      <h3>Speed Test Results</h3>
+      <p class="test-time">Test completed: {{ testResults.testDate | date:'medium' }}</p>
+      
+      <div class="metrics-container">
+        <div class="metric">
+          <div class="metric-value" [ngClass]="getSpeedClass(testResults.downloadSpeed, 'download')">
+            {{ testResults.downloadSpeed.toFixed(2) }}
+          </div>
+          <div class="metric-label">Download (Mbps)</div>
+        </div>
+        
+        <div class="metric">
+          <div class="metric-value" [ngClass]="getSpeedClass(testResults.uploadSpeed, 'upload')">
+            {{ testResults.uploadSpeed.toFixed(2) }}
+          </div>
+          <div class="metric-label">Upload (Mbps)</div>
+        </div>
+        
+        <div class="metric">
+          <div class="metric-value" [ngClass]="getSpeedClass(testResults.ping, 'ping')">
+            {{ testResults.ping.toFixed(0) }}
+          </div>
+          <div class="metric-label">Ping (ms)</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card games-performance">
+      <h3>Estimated Game Performance</h3>
+      <p class="description">Based on your internet connection, here's how popular games might perform:</p>
+      
+      <div class="games-grid">
+        <div class="game-card" *ngFor="let game of gamePerformance">
+          <div class="game-icon">
+            <img [src]="game.iconUrl" [alt]="game.name + ' icon'" class="game-image">
+          </div>
+          <div class="game-info">
+            <h4>{{ game.name }}</h4>
+            <div class="game-fps" [ngClass]="getPerformanceClass(game.performanceRating)">
+              {{ game.estimatedFps }} FPS
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card custom-analysis">
+      <h3>Custom AI Analysis</h3>
+      <p>Enter a game or application to analyze if your internet connection is suitable:</p>
+      
+      <div class="search-container">
+        <input type="text" [(ngModel)]="customQuery" placeholder="E.g., Cyberpunk 2077, Zoom meetings, AI research..." 
+               [disabled]="isAnalyzing">
+        <button class="btn btn-accent" (click)="analyzeCustom()" 
+                [disabled]="isAnalyzing || !customQuery.trim()">
+          {{ isAnalyzing ? 'Analyzing...' : 'Analyze' }}
+        </button>
+      </div>
+      
+      <div *ngIf="customAnalysisResult" class="analysis-result fade-in">
+        <p>{{ customAnalysisResult }}</p>
+      </div>
+    </div>
+  </div>
+</div> 

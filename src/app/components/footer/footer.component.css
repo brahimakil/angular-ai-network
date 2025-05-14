@@ -1,0 +1,12 @@
+.app-footer {
+  padding: 1rem 2rem;
+  background: var(--primary-dark);
+  color: var(--text-light);
+  text-align: center;
+  margin-top: auto;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+} 

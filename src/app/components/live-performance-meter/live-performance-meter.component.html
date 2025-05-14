@@ -1,0 +1,91 @@
+<div class="live-performance-container">
+  <div class="theme-toggle">
+    <button class="theme-toggle-btn" (click)="toggleTheme()">
+      <span *ngIf="(currentTheme$ | async) === 'light'">🌙</span>
+      <span *ngIf="(currentTheme$ | async) === 'dark'">☀️</span>
+    </button>
+  </div>
+  
+  <div class="card performance-card">
+    <h2>Live Performance Meter</h2>
+    <p class="subtitle">Real-time analysis of your internet connection</p>
+    
+    <div class="status-badge" *ngIf="testResults" [ngClass]="performanceStatus">
+      {{ statusMessage }}
+    </div>
+    
+    <div class="meters-container">
+      <!-- Download Speed Gauge -->
+      <div class="gauge-container">
+        <div class="gauge">
+          <div class="gauge-background"></div>
+          <div class="gauge-needle" [style.transform]="getGaugeRotation(downloadGaugeValue)"></div>
+          <div class="gauge-center"></div>
+          <div class="gauge-value">{{ downloadGaugeValue.toFixed(1) }}</div>
+          <div class="gauge-label">Mbps</div>
+        </div>
+        <div class="gauge-title">Download</div>
+        <div class="gauge-range-indicator">
+          <span class="range poor">0</span>
+          <span class="range average">50</span>
+          <span class="range good">100</span>
+          <span class="range excellent">200+</span>
+        </div>
+      </div>
+      
+      <!-- Upload Speed Gauge -->
+      <div class="gauge-container">
+        <div class="gauge">
+          <div class="gauge-background"></div>
+          <div class="gauge-needle" [style.transform]="getGaugeRotation(uploadGaugeValue)"></div>
+          <div class="gauge-center"></div>
+          <div class="gauge-value">{{ uploadGaugeValue.toFixed(1) }}</div>
+          <div class="gauge-label">Mbps</div>
+        </div>
+        <div class="gauge-title">Upload</div>
+        <div class="gauge-range-indicator">
+          <span class="range poor">0</span>
+          <span class="range average">25</span>
+          <span class="range good">50</span>
+          <span class="range excellent">100+</span>
+        </div>
+      </div>
+      
+      <!-- Ping Meter (Vertical Bar) -->
+      <div class="ping-container">
+        <div class="ping-meter">
+          <div class="ping-bar">
+            <div class="ping-fill" [style.height]="getPingHeight(pingGaugeValue)"></div>
+          </div>
+          <div class="ping-markers">
+            <div class="ping-marker excellent">20ms</div>
+            <div class="ping-marker good">50ms</div>
+            <div class="ping-marker average">100ms</div>
+            <div class="ping-marker poor">200ms+</div>
+          </div>
+        </div>
+        <div class="ping-value">{{ pingGaugeValue.toFixed(0) }}ms</div>
+        <div class="gauge-title">Ping</div>
+      </div>
+      
+      <!-- FPS Meter -->
+      <div class="fps-container">
+        <div class="fps-meter">
+          <div class="fps-value" [ngClass]="getSpeedRangeClass('download', getFpsEstimate())">
+            {{ getFpsEstimate() }}
+          </div>
+          <div class="fps-label">FPS</div>
+        </div>
+        <div class="gauge-title">Estimated FPS</div>
+        <div class="fps-description">Based on your connection</div>
+      </div>
+    </div>
+    
+    <div class="retest-container">
+      <button class="retest-button" [disabled]="isTestRunning" (click)="refreshAnalysis()">
+        <span *ngIf="!isTestRunning">↻ Refresh Analysis</span>
+        <span *ngIf="isTestRunning" class="spinner"></span>
+      </button>
+    </div>
+  </div>
+</div> 
